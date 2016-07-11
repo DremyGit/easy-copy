@@ -1,0 +1,29 @@
+{
+  "name": "copy-something",
+  "version": "0.0.1",
+  "description": "Copy some properties of an object in a easily way",
+  "main": "copy-something.js",
+  "scripts": {
+    "test": "mocha test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DremyGit/copy-something.git"
+  },
+  "keywords": [
+    "copy",
+    "clone",
+    "object",
+    "properties"
+  ],
+  "author": "Dremy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DremyGit/copy-something/issues"
+  },
+  "homepage": "https://github.com/DremyGit/copy-something#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3"
+  }
+}
