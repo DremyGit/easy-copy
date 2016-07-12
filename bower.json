@@ -1,0 +1,23 @@
+{
+  "name": "easy-copy",
+  "description": "Copy some properties of an object easily",
+  "main": "easy-copy.js",
+  "authors": [
+    "Dremy"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "copy",
+    "clone",
+    "object",
+    "properties"
+  ],
+  "homepage": "https://github.com/DremyGit/easy-copy",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "package.json",
+    "coverage",
+    "test.js"
+  ]
+}
