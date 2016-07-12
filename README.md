@@ -1,2 +1,3 @@
-# copy-something
-Copy some properties of an object in a easily way
+# easy-copy
+
+Copy some properties of an object easily

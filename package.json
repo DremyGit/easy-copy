@@ -1,8 +1,8 @@
 {
-  "name": "copy-something",
+  "name": "easy-copy",
   "version": "0.0.1",
-  "description": "Copy some properties of an object in a easily way",
-  "main": "copy-something.js",
+  "description": "Copy some properties of an object easily",
+  "main": "easy-copy.js",
   "scripts": {
     "test": "mocha test.js",
     "test:watch": "mocha --watch test.js",
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DremyGit/copy-something.git"
+    "url": "git+https://github.com/DremyGit/easy-copy.git"
   },
   "keywords": [
     "copy",
@@ -21,9 +21,9 @@
   "author": "Dremy",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/DremyGit/copy-something/issues"
+    "url": "https://github.com/DremyGit/easy-copy/issues"
   },
-  "homepage": "https://github.com/DremyGit/copy-something#readme",
+  "homepage": "https://github.com/DremyGit/easy-copy#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "istanbul": "^0.4.4",

@@ -1,7 +1,8 @@
-var copy = require('./copy-something');
+var easycopy = require('./easy-copy');
 var expect = require('chai').expect;
+var copy = easycopy.copy;
 
-describe('Copy', function () {
+describe('easeCopy', function () {
   it('copy an array', function () {
     var obj = [1, 2, 3, 4];
     expect(copy(obj, [0, 1, 3])).to.deep.equal([1, 2, 4]);
