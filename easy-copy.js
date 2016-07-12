@@ -14,18 +14,9 @@
     root.mymodule = easycopy
   }
 
-  easycopy.copy = function copy(obj, posArr) {
-    var target, objType = getType(obj);
-    switch (objType) {
-      case 'array':
-        target = [];
-        break;
-      case 'object':
-        target = {};
-        break;
-      default:
-        throw new TypeError('Object is not a object or array');
-    }
+  var copy = easycopy.copy = function (obj, posArr) {
+    var target = createTargetObj(obj)
+      , objType = getType(obj);
 
     for (var i = 0; i < posArr.length; i++) {
       var item = posArr[i];
@@ -53,6 +44,39 @@
     return target;
   };
 
+  var clone = easycopy.clone = function (obj) {
+    switch (getType(obj)) {
+      case 'object':
+      case 'array':
+        var target = createTargetObj(obj);
+        for (var prop in obj) {
+          if (obj.hasOwnProperty(prop)) {
+            target[prop] = clone(obj[prop]);
+          }
+        }
+        return target;
+      case 'date':
+        return new Date(obj);
+      default:
+        return obj;
+    }
+  };
+
+  function createTargetObj(obj) {
+    var target;
+    switch (getType(obj)) {
+      case 'array':
+        target = [];
+        break;
+      case 'object':
+        target = {};
+        break;
+      default:
+        throw new TypeError(obj + ' is not a object or array');
+    }
+    return target;
+  }
+
   function getType(obj) {
     var type = typeof obj;
     if (type === 'object') {
@@ -61,6 +85,8 @@
           return 'object';
         case '[object Array]':
           return 'array';
+        case '[object Date]':
+          return 'date';
       }
     } else {
       return type;
@@ -69,7 +95,7 @@
 
   function getFirstKey(obj) {
     if (typeof obj !== 'object') {
-      throw new TypeError('Not an object');
+      throw new TypeError(obj + ' is not an object');
     }
     for (var key in obj) {
       if (obj.hasOwnProperty(key)) {
@@ -78,17 +104,4 @@
     }
   }
 
-  function clone(obj) {
-    if (typeof obj === 'object') {
-      var target = getType(obj) === 'array' ? [] : {};
-      for (var prop in obj) {
-        if (obj.hasOwnProperty(prop)) {
-          target[prop] = clone(obj[prop]);
-        }
-      }
-      return target;
-    } else {
-      return obj;
-    }
-  }
 }).call(this);
