@@ -1,26 +1,22 @@
 'use strict';
 
 (function () {
-  var easycopy = {};
-  var root = this;
+  var easycopy, copy
+    , root = this;
 
-  if (typeof exports !== 'undefined') {
-    if (typeof module !== 'undefined' && module.exports) {
-      exports = module.exports = easycopy
+  easycopy = copy = function (obj, posArr) {
+
+    if (typeof posArr === 'undefined') {
+      return clone(obj);
     }
-    exports.mymodule = easycopy
-  }
-  else {
-    root.mymodule = easycopy
-  }
 
-  var copy = easycopy.copy = function (obj, posArr) {
     var target = createTargetObj(obj)
       , objType = getType(obj);
 
     for (var i = 0; i < posArr.length; i++) {
-      var item = posArr[i];
-      var key, value, childPos;
+      var item = posArr[i]
+        , key, value, childPos;
+
       if (getType(item) === 'object') {
         key = getFirstKey(item);
         childPos = item[key];
@@ -32,6 +28,7 @@
         key = item;
         value = obj[key];
       }
+
       switch (objType) {
         case 'array':
           target.push(clone(value));
@@ -44,7 +41,7 @@
     return target;
   };
 
-  var clone = easycopy.clone = function (obj) {
+  function clone (obj) {
     switch (getType(obj)) {
       case 'object':
       case 'array':
@@ -60,36 +57,31 @@
       default:
         return obj;
     }
-  };
+  }
 
   function createTargetObj(obj) {
-    var target;
     switch (getType(obj)) {
       case 'array':
-        target = [];
-        break;
+        return [];
       case 'object':
-        target = {};
-        break;
+        return {};
       default:
         throw new TypeError(obj + ' is not a object or array');
     }
-    return target;
   }
 
   function getType(obj) {
     var type = typeof obj;
-    if (type === 'object') {
-      switch (Object.prototype.toString.call(obj)) {
-        case '[object Object]':
-          return 'object';
-        case '[object Array]':
-          return 'array';
-        case '[object Date]':
-          return 'date';
-      }
-    } else {
+    if (type !== 'object') {
       return type;
+    }
+    switch (Object.prototype.toString.call(obj)) {
+      case '[object Object]':
+        return 'object';
+      case '[object Array]':
+        return 'array';
+      case '[object Date]':
+        return 'date';
     }
   }
 
@@ -103,5 +95,15 @@
       }
     }
   }
-
+  easycopy.copy = copy;
+  easycopy.clone = clone;
+  if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+      exports = module.exports = easycopy.copy
+    }
+    exports.easycopy = easycopy
+  }
+  else {
+    root.easycopy = easycopy
+  }
 }).call(this);

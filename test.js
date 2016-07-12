@@ -1,39 +1,38 @@
 var easycopy = require('./easy-copy');
 var expect = require('chai').expect;
-var copy = easycopy.copy;
-var clone = easycopy.clone;
+var clone = easycopy;
 
 
 describe('easecopy', function () {
-  describe('copy()', function () {
-    it('copy an array', function () {
+  describe('easycopy()', function () {
+    it('easycopy an array', function () {
       var obj = [1, 2, 3, 4];
-      expect(copy(obj, [0, 1, 3])).to.deep.equal([1, 2, 4]);
+      expect(easycopy(obj, [0, 1, 3])).to.deep.equal([1, 2, 4]);
     });
-    it('copy a deep array', function () {
+    it('easycopy a deep array', function () {
       var obj = [1, [2, 3, 4], 5, [6, 7, [8, 9]]];
-      expect(copy(obj, [0, 1, 3])).to.deep.equal([1, [2, 3, 4], [6, 7, [8, 9]]]);
-      expect(copy(obj, [{'3': [2]}])).to.deep.equal([[[8, 9]]]);
-      expect(copy(obj, [{3: {2: [1]}}])).to.deep.equal([[[9]]]);
-      expect(copy(obj, [0, {'1': [1]}, {'3': [2]}])).to.deep.equal([1, [3], [[8, 9]]]);
+      expect(easycopy(obj, [0, 1, 3])).to.deep.equal([1, [2, 3, 4], [6, 7, [8, 9]]]);
+      expect(easycopy(obj, [{'3': [2]}])).to.deep.equal([[[8, 9]]]);
+      expect(easycopy(obj, [{3: {2: [1]}}])).to.deep.equal([[[9]]]);
+      expect(easycopy(obj, [0, {'1': [1]}, {'3': [2]}])).to.deep.equal([1, [3], [[8, 9]]]);
     });
 
-    it('copy a simple object', function () {
+    it('easycopy a simple object', function () {
       var obj = {a: 'a', b: 'b', c: 'c', d: 'd'};
-      expect(copy(obj, ['a', 'c'])).to.deep.equal({a: 'a', c: 'c'});
+      expect(easycopy(obj, ['a', 'c'])).to.deep.equal({a: 'a', c: 'c'});
     });
-    it('copy a deep object', function () {
+    it('easycopy a deep object', function () {
       var obj = {
         a: 'a',
         b: {b1: 'b1', b2: 'b2'},
         c: {c1: 'c1', c2: {c21: 'c21', c22: 'c22'}},
         d: {d1: 'd1', d2: {d21: 'd21', d22: {d221: 'd221', d222: 'd222'}}}
       };
-      expect(copy(obj, ['a'])).to.deep.equal({a: 'a'});
-      expect(copy(obj, ['b'])).to.deep.equal({b: {b1: 'b1', b2: 'b2'}});
-      expect(copy(obj, [{b: ['b2']}])).to.deep.equal({b: {b2: 'b2'}});
-      expect(copy(obj, [{d: ['d2']}])).to.deep.equal({d: {d2: {d21: 'd21', d22: {d221: 'd221', d222: 'd222'}}}});
-      expect(copy(obj, [
+      expect(easycopy(obj, ['a'])).to.deep.equal({a: 'a'});
+      expect(easycopy(obj, ['b'])).to.deep.equal({b: {b1: 'b1', b2: 'b2'}});
+      expect(easycopy(obj, [{b: ['b2']}])).to.deep.equal({b: {b2: 'b2'}});
+      expect(easycopy(obj, [{d: ['d2']}])).to.deep.equal({d: {d2: {d21: 'd21', d22: {d221: 'd221', d222: 'd222'}}}});
+      expect(easycopy(obj, [
         'a',
         {c: ['c2']},
         {d: ['d1', {d2: 'd22'}]}
@@ -44,25 +43,46 @@ describe('easecopy', function () {
       })
     });
 
-    it('should be an deep copy for array', function () {
+    it('should be an deep easycopy for array', function () {
       var arr = [1, [2, [3, 4]]];
-      var copyedArr = copy(arr, [0, {1: {1: 1}}]);
+      var copyedArr = easycopy(arr, [0, {1: {1: 1}}]);
       expect(copyedArr).to.deep.equal([1, [[4]]]);
       arr[1][1][1] = 5;
       expect(copyedArr).to.deep.equal([1, [[4]]]);
     });
-    it('should be an deep copy for object', function () {
+    it('should be an deep easycopy for object', function () {
       var obj = { a: { b: { c: { d: 'foo' } } }, e:'bar' };
-      var copyedObj = copy(obj, [{a:{b:{c:'d'}}}]);
+      var copyedObj = easycopy(obj, [{a:{b:{c:'d'}}}]);
       expect(copyedObj).to.deep.equal({a: { b: { c: { d: 'foo' } } } });
       obj.a.b.c.d = 'baz';
       obj.a.b = 'bar';
       expect(copyedObj).to.deep.equal({a: { b: { c: { d: 'foo' } } } });
     });
+    it('copy a mixed object', function () {
+      var foo = [{
+        a: [1, 2, 3],
+        b: [4]
+      }, {
+        c: [
+          5,
+          {d: 6}
+        ]
+      }];
+      var bar = easycopy(foo, [{0: 'a'}, {1: {c: 1}}]);
+      expect(bar).to.deep.equal(
+        [{
+          a: [1, 2, 3]
+        }, {
+          c: [
+            {d: 6}
+          ]
+        }]
+      );
+    })
   });
 
   describe('clone()', function () {
-    it('should be an deep copy for array', function () {
+    it('should be an deep easycopy for array', function () {
       var arr = [1, 2, [3, 4], [5, [6, 7]]];
       var clonedArr = clone(arr);
       expect(clonedArr).to.deep.equal([1, 2, [3, 4], [5, [6, 7]]]);
@@ -71,7 +91,7 @@ describe('easecopy', function () {
       arr[2] = 0;
       expect(clonedArr).to.deep.equal([1, 2, [3, 4], [5, [6, 7]]]);
     });
-    it('should be an deep copy for object', function () {
+    it('should be an deep easycopy for object', function () {
       var obj = {a: 1, b: {c: 2}, d: {e: {f: 3}}};
       var clonedObj = clone(obj);
       expect(clonedObj).to.deep.equal({a: 1, b: {c: 2}, d: {e: {f: 3}}});
