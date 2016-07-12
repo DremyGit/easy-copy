@@ -1,18 +1,17 @@
 'use strict';
 
 function copy(obj, posArr) {
-  var target
-    , objType = getType(obj);
+  var target, objType = getType(obj);
   switch (objType) {
-    case 'array':
-      target = [];
-      break;
-    case 'object':
-      target = {};
-      break;
-    default:
-      console.log(obj, objType);
-      throw new TypeError('Object is not a object or array');
+  case 'array':
+    target = [];
+    break;
+  case 'object':
+    target = {};
+    break;
+  default:
+    //console.log(obj, objType);
+    throw new TypeError('Object is not a object or array');
   }
 
   for (var i = 0; i < posArr.length; i++) {
@@ -30,28 +29,28 @@ function copy(obj, posArr) {
       value = obj[key];
     }
     switch (objType) {
-      case 'array':
-        target.push(clone(value));
-        break;
-      case 'object':
-        target[key] = clone(value);
-        break;
+    case 'array':
+      target.push(clone(value));
+      break;
+    case 'object':
+      target[key] = clone(value);
+      break;
     }
   }
-  return target
+  return target;
 }
 
 function getType(obj) {
   var type = typeof obj;
   if (type === 'object') {
-      switch (Object.prototype.toString.call(obj)) {
-        case '[object Object]':
-          return 'object';
-        case '[object Array]':
-          return 'array';
-      }
+    switch (Object.prototype.toString.call(obj)) {
+    case '[object Object]':
+      return 'object';
+    case '[object Array]':
+      return 'array';
+    }
   } else {
-    return type
+    return type;
   }
 }
 function getFirstKey(obj) {

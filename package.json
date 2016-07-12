@@ -4,7 +4,9 @@
   "description": "Copy some properties of an object in a easily way",
   "main": "copy-something.js",
   "scripts": {
-    "test": "mocha test.js"
+    "test": "mocha test.js",
+    "test:watch": "mocha --watch test.js",
+    "coverage": "NODE_ENV=test istanbul cover _mocha -- --recursive"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,7 @@
   "homepage": "https://github.com/DremyGit/copy-something#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "istanbul": "^0.4.4",
     "mocha": "^2.5.3"
   }
 }
