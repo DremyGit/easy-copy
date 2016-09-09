@@ -22,6 +22,8 @@ $ bower install easy-copy
 
 ### Usage
 
+#### easyCopy(src, [filter, [opt]])
+
 If you want to put some properties of an object to a new object
 
 ```js
@@ -99,6 +101,32 @@ var bar = easycopy(foo, [{0: 'a'}, {1: {c: 1}}]);
 ```
 
 Enjoy!
+
+## Options
+
+### undefined (default: true)
+
+If one of the property is not set, and `opt.undefined` is set true, it will set to undefined automatically.
+Otherwise the property will not be set;
+
+```js
+var foo = {
+  a: 1,
+  b: 2,
+  c: 3
+}
+
+var bar = easyCopy(foo, ['a', 'd']);
+//{
+//  a: 1,
+//  d: undefined
+//}
+
+var baz = easyCopy(foo, ['a', 'd'], {undefined: false});
+//{
+//  a: 1
+//}
+```
 
 ## Licence
 

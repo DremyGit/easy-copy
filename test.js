@@ -78,7 +78,7 @@ describe('easecopy', function () {
           ]
         }]
       );
-    })
+    });
   });
 
   describe('clone()', function () {
@@ -105,6 +105,65 @@ describe('easecopy', function () {
       var clonedObj = clone(obj);
       expect(clonedObj).to.deep.equal(obj);
       expect(clonedObj.b).not.equal(obj.b);
+    })
+  });
+
+  describe('face to undefined: ', function () {
+    it('copy null', function () {
+      expect(easycopy()).to.deep.equal({});
+    });
+    it('copy undefined proptypes of obj default', function () {
+      var obj = {a: 1, b: 2, c: 3};
+      var copyedObj = easycopy(obj, ['a', 'e']);
+      expect(copyedObj).to.deep.equal({a: 1, e: undefined})
+    });
+
+    it('copy undefined index of array default', function () {
+      var arr = [1, 2, 3, 4];
+      var copyedArr = easycopy(arr, [1, 5, 8]);
+      expect(copyedArr).to.deep.equal([2, undefined, undefined]);
+    });
+
+    it('copy undefined proptypes of deep object default', function () {
+      var obj = {
+        a: 'a',
+        b: {b1: 'b1', b2: 'b2'},
+        c: {c1: 'c1', c2: {c21: 'c21', c22: 'c22'}},
+        d: {d1: 'd1', d2: {d21: 'd21', d22: {d221: 'd221', d222: 'd222'}}}
+      };
+      var copyedObj = easycopy(obj, ['b', {c: ['c1', {c2: ['c21', 'c23']}, 'c3']}, {d: 'd3'}, {e: ['e1', {e2: 'e33'}]}]);
+      expect(copyedObj).to.deep.equal({
+        b: {b1: 'b1', b2: 'b2'},
+        c: {c1: 'c1', c2: {c21: 'c21', c23: undefined}, c3: undefined},
+        d: {d3: undefined},
+        e: {e1: undefined, e2: {e33: undefined}}
+      });
+    })
+
+    it('did not copy undefined proptypes of object by setting', function () {
+      var obj = {a: 1, b: 2, c:3};
+      var copyedObj = easycopy(obj, ['a', 'e'], {undefined: false});
+      expect(copyedObj).to.deep.equal({a: 1});
+    });
+
+    it('did not copy undefined index of array default', function () {
+      var arr = [1, 2, 3, 4];
+      var copyedArr = easycopy(arr, [1, 5, 8], {undefined: false});
+      expect(copyedArr).to.deep.equal([2]);
+    });
+
+    it('did not copy undefined proptypes of deep object by setting', function () {
+      var obj = {
+        a: 'a',
+        b: {b1: 'b1', b2: 'b2'},
+        c: {c1: 'c1', c2: {c21: 'c21', c22: 'c22'}},
+        d: {d1: 'd1', d2: {d21: 'd21', d22: {d221: 'd221', d222: 'd222'}}}
+      };
+      var copyedObj = easycopy(obj, ['b', {c: ['c1', {c2: ['c21', 'c23']}, 'c33']}, {d: 'd3'}, {e: ['e1', {e2: 'e33'}]}], {undefined: false});
+      expect(copyedObj).to.deep.equal({
+        b: {b1: 'b1', b2: 'b2'},
+        c: {c1: 'c1', c2: {c21: 'c21'}}
+      });
     })
   })
 });

@@ -4,8 +4,15 @@
   var easycopy, copy
     , root = this;
 
-  easycopy = copy = function (obj, posArr) {
+  easycopy = copy = function (obj, posArr, opt) {
 
+    if (typeof opt === 'undefined') {
+      opt = {};
+    }
+
+    opt.undefined = typeof opt.undefined === 'undefined' ? true : opt.undefined;
+
+    obj = obj || {};
     if (typeof posArr === 'undefined') {
       return clone(obj);
     }
@@ -23,19 +30,23 @@
         if (getType(childPos) !== 'array') {
           childPos = [childPos];
         }
-        value = copy(obj[key], childPos);
+        value = copy(obj[key], childPos, opt);
       } else {
         key = item;
         value = obj[key];
       }
 
-      switch (objType) {
-        case 'array':
-          target.push(clone(value));
-          break;
-        case 'object':
-          target[key] = clone(value);
-          break;
+      if (opt.undefined || (typeof value !== 'undefined' &&
+                          (typeof value !== 'object' ||  !isNullObjectOrNullArray(value)))) {
+
+        switch (objType) {
+          case 'array':
+            target.push(clone(value));
+            break;
+          case 'object':
+            target[key] = clone(value);
+            break;
+        }
       }
     }
     return target;
@@ -64,6 +75,8 @@
       case 'array':
         return [];
       case 'object':
+        return {};
+      case 'undefined':
         return {};
       default:
         throw new TypeError(obj + ' is not a object or array');
@@ -105,5 +118,12 @@
   }
   else {
     root.easycopy = easycopy
+  }
+
+  function isNullObjectOrNullArray(obj) {
+    for (var key in obj) {
+      return false;
+    }
+    return true;
   }
 }).call(this);
