@@ -137,13 +137,16 @@ describe('easecopy', function () {
         ]
       })
 
-      expect(easycopy(foo, {children: {1: 'children'}})).to.deep.equal({
+      expect(easycopy(foo, {children: {1: 'children', 2: 'children'}})).to.deep.equal({
         children: [
           {
             children: [
               { id: 4, children: [] },
               { id: 5, children: [] }
             ]
+          },
+          {
+            children: []
           }
         ]
       })
@@ -236,3 +239,20 @@ describe('easecopy', function () {
     })
   })
 });
+
+describe('Use some nature filter', function () {
+
+  it('filter is a object', function () {
+    var obj = {
+      a: 'a',
+      b: {b1: 'b1', b2: 'b2'},
+      c: {c1: 'c1', c2: {c21: 'c21', c22: 'c22'}},
+      d: {d1: 'd1', d2: {d21: 'd21', d22: {d221: 'd221', d222: 'd222'}}, d3: {d31: 'd31'}}
+    };
+    expect(easycopy(obj, {b: 'b1', c: 'c2', d: {d2: 'd21', d3: 'd31'}})).to.deep.equal({
+      b: {b1: 'b1'},
+      c: {c2: {c21: 'c21', c22: 'c22'}},
+      d: {d2: {d21: 'd21'}, d3: {d31: 'd31'}}
+    })
+  });
+})

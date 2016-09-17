@@ -4,7 +4,7 @@
   var easycopy, copy
     , root = this;
 
-  easycopy = copy = function (obj, posArr, opt) {
+  easycopy = copy = function (src, filter, opt) {
 
     if (typeof opt === 'undefined') {
       opt = {};
@@ -12,40 +12,55 @@
 
     opt.undefined = typeof opt.undefined === 'undefined' ? true : opt.undefined;
 
-    obj = obj || {};
-    if (typeof posArr === 'undefined') {
-      return clone(obj);
+    src = src || {};
+
+    switch (getType(filter)) {
+      case 'undefined':
+        return clone(src);
+
+      case 'string':
+        filter = [filter];
+        break;
+
+      case 'object':
+        filter = changeObjToArray(filter);
+        break
     }
 
-    if (getType(posArr) === 'string' ||
-        (getType(posArr) === 'object' && !opt.__innerCall)) {
-      posArr = [posArr]
-    }
-    opt.__innerCall = true;
+    var target = createTargetObj(src)
 
-    var target = createTargetObj(obj)
-      , objType = getType(obj);
+    for (var i = 0; i < filter.length; i++) {
+      var filterItem = filter[i]
+        , key, value, childFilter;
 
-    for (var i = 0; i < posArr.length; i++) {
-      var item = posArr[i]
-        , key, value, childPos;
+      if (getType(filterItem) === 'object') {
+        key = getFirstPropName(filterItem);
+        childFilter = filterItem[key];
 
-      if (getType(item) === 'object') {
-        key = getFirstKey(item);
-        childPos = item[key];
-        if (getType(childPos) !== 'array') {
-          childPos = [childPos];
+        switch (getType(childFilter)) {
+          case 'array':
+            break;
+
+          case 'object':
+            childFilter = changeObjToArray(childFilter);
+            break;
+
+          default:
+            childFilter = [childFilter];
+            break;
         }
-        value = copy(obj[key], childPos, opt);
+
+        value = copy(src[key], childFilter, opt);
+
       } else {
-        key = item;
-        value = obj[key];
+        key = filterItem;
+        value = src[key];
       }
 
       if (opt.undefined || (typeof value !== 'undefined' &&
                           (typeof value !== 'object' ||  !isNullObjectOrNullArray(value)))) {
 
-        switch (objType) {
+        switch (getType(src)) {
           case 'array':
             target.push(clone(value));
             break;
@@ -104,7 +119,7 @@
     }
   }
 
-  function getFirstKey(obj) {
+  function getFirstPropName(obj) {
     if (typeof obj !== 'object') {
       throw new TypeError(obj + ' is not an object');
     }
@@ -113,6 +128,18 @@
         return key;
       }
     }
+  }
+
+  function changeObjToArray(obj) {
+    var arr = [];
+    for (var childPropName in obj) {
+      if (obj.hasOwnProperty(childPropName)) {
+        var childObj = {};
+        childObj[childPropName] = obj[childPropName];
+        arr.push(childObj)
+      }
+    }
+    return arr;
   }
   easycopy.copy = copy;
   easycopy.clone = clone;
