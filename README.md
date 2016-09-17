@@ -3,130 +3,156 @@
 [![Build Status](https://travis-ci.org/DremyGit/easy-copy.png)](https://travis-ci.org/DremyGit/easy-copy)
 [![Coverage Status](https://coveralls.io/repos/github/DremyGit/easy-copy/badge.svg?branch=master)](https://coveralls.io/github/DremyGit/easy-copy?branch=master)
 
-Copy some properties of an object easily
+Copy some properties of an object easily [中文文档](https://dremy.cn/blog/introduction-for-easy-copy)
 
-## Getting started
 
 ### Install
 
 #### By npm
 
-```js
+```
 $ npm install easy-copy
 ```
 #### By bower
 
-```js
+```
 $ bower install easy-copy
 ```
 
 ### Usage
 
-#### easyCopy(src, [filter, [opt]])
+#### easyCopy(src [, filter [, opt]])
 
-If you want to put some properties of an object to a new object
++ `src`: The source object, where all of the props comes from
++ `filter`: The filter condition, it could be a `String`, `Array`, or an `Object`, and they could be nested deeply
++ `opt`: The options for copy operation
 
-```js
-var foo = {
-  a: 1,     // need
-  b: 2,     // no need
-  c: {
-    d: 4,   // need
-    e: 5    // no need
-  }
-}
-``` 
- 
-Maybe you will do like this:
+### Get Start
+
+If you often write some code like this:
 
 ```js
-var bar = {
-  a: foo.a,
-  c: {
-    d: foo.c.d
-  }
+const data = {
+    name: body.name,
+    age: body.age,
+    major: body.major,
+    email: body.email
 }
 ```
 
-It's too complicated! If we use `easy-copy`, it will be easily:
+You must fell tired very much. How can we do if we use easy-copy?
 
 ```js
-var easycopy = require('easy-copy');
-var bar = easycopy(foo, ['a', {c: 'd'}]);
+// Import easy-copy module
+const easycopy = require('easy-copy');
+
+const data = easycopy(body, ['name', 'age', 'major', 'email']);
+// Yes! Just write an array :)
 ```
 
-The copy is deep copy, so it just like clone, but you can do some DIY:
+### Deeply copy
+
+If an object is nested like this:
 
 ```js
-var bar = easycopy(foo)
-// foo's deep copy object
-
-var baz = easycopy(foo, ['a', 'c'])
-// {
-//  a: 1,
-//  c: {
-//    d: 4,
-//    e: 5
-//  }
-//}
-```
-
-It also works in array, like this:
-
-```js
-var foo = [1, 2, 3, [4, 5, 6]];
-var bar = easycopy(foo, [0, {3: 1}]);
-// [1, [5]]
-```
-
-And you can mix object and array, like this:
-```js
-var foo = [{
-  a: [1, 2, 3],
-  b: [4]
-}, {
-  c: [
-    5,
-    {d: 6}
+const foo = {
+  id: 1,
+  children: [
+    { id: 2, children: [] },
+    {
+      id: 3,
+      children: [
+        { id: 4, children: [] },
+        { id: 5, children: [] }
+      ]
+    },
+    { id: 6, children: [] }
   ]
-}];
-var bar = easycopy(foo, [{0: 'a'}, {1: {c: 1}}]);
-// [{
-//   a: [1, 2, 3]
-// }, {
-//   c: [
-//     {d: 6}
-//   ]
-// }];
+}
 ```
 
-Enjoy!
-
-## Options
-
-### undefined (default: true)
-
-If one of the property is not set, and `opt.undefined` is set true, it will set to undefined automatically.
-Otherwise the property will not be set;
+We can process this object easily using easy-copy. For example, if we just want to
+keep the second property of the children property, we can do like this:
 
 ```js
-var foo = {
+const bar = easycopy(foo, {children: 1})
+
+console.log(bar);
+// {
+//   children: [
+//     {
+//       id: 3,
+//       children: [
+//         { id: 4: children: [] },
+//         { id: 5: children: [] }
+//       ]
+//     }
+//   ]
+// }
+```
+
+OK, but if I want copy the 2 properties which id is 4 and 5, how can I do? You can write like this:
+
+```js
+const baz = easycopy(foo, {children: [{1: {children: 0}}, 2]});
+
+console.log(baz);
+// {
+//   children: [
+//     {
+//       children: [
+//         { id: 4, children: [] }
+//       ]
+//     },
+//     { id: 6, children: [] }
+//   ]
+// }
+```
+
+Yeah! It's so easy!
+
+
+### Options
+
+The third argument of `easycopy()` is options. At present, the `v1.0` version is support only one option: `undefined`.
+it could transform the non existed prop of src object set to `undefined` automatically. The default value is `true`,
+in other words, it relay on the filter argument to set the target properties.
+
+Here are some example:
+
+
+```js
+const foo = {
   a: 1,
   b: 2,
-  c: 3
+  c: {
+    d: 1,
+    e: 2
+  }
 }
 
-var bar = easyCopy(foo, ['a', 'd']);
-//{
-//  a: 1,
-//  d: undefined
-//}
+const bar = easycopy(foo, [{c: ['d', 'z']}, {f: 'h'}]);
+// {
+//   c: {
+//     d: 1,
+//     z: undefined
+//   },
+//   f: {
+//     h: unfined
+//   }
+// }
 
-var baz = easyCopy(foo, ['a', 'd'], {undefined: false});
-//{
-//  a: 1
-//}
+const baz = easycopy(foo, [{c: ['d', 'z']}, {f: 'h'}], {undefined: false});
+// {
+//   c: {
+//     d: 1,
+//   },
+// }
 ```
+
+
+So you can decide how to filter and copy an object by your self, and you will not meet with some error
+like `Cannot read property 'xxx' of undefined`, it is so nasty, isn't it?
 
 ## Licence
 
