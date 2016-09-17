@@ -141,11 +141,9 @@
     }
     return arr;
   }
-  easycopy.copy = copy;
-  easycopy.clone = clone;
   if (typeof exports !== 'undefined') {
     if (typeof module !== 'undefined' && module.exports) {
-      exports = module.exports = easycopy.copy
+      module.exports = easycopy;
     }
     exports.easycopy = easycopy
   }

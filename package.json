@@ -1,6 +1,6 @@
 {
   "name": "easy-copy",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Copy some properties of an object easily",
   "main": "easy-copy.js",
   "scripts": {

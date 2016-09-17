@@ -255,4 +255,22 @@ describe('Use some nature filter', function () {
       d: {d2: {d21: 'd21'}, d3: {d31: 'd31'}}
     })
   });
+
+  it('filter is a object, but has undefined proptypes', function () {
+    var obj = {
+      a: 'a',
+      b: {b1: 'b1', b2: 'b2'},
+      c: {c1: 'c1', c2: {c21: 'c21', c22: 'c22'}},
+      d: {d1: 'd1', d2: {d21: 'd21', d22: {d221: 'd221', d222: 'd222'}}, d3: {d31: 'd31'}}
+    };
+    expect(easycopy(obj, {b: 'b1', c: 'c3', d: {d2: 'd21', d6: 'd61'}})).to.deep.equal({
+      b: {b1: 'b1'},
+      c: {c3: undefined},
+      d: {d2: {d21: 'd21'}, d6: {d61: undefined}}
+    });
+    expect(easycopy(obj, {b: 'b1', c: 'c3', d: {d2: 'd21', d6: 'd61'}}, {undefined: false})).to.deep.equal({
+      b: {b1: 'b1'},
+      d: {d2: {d21: 'd21'}}
+    })
+  })
 })
