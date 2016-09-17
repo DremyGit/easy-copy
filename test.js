@@ -79,6 +79,75 @@ describe('easecopy', function () {
         }]
       );
     });
+    it('filter is a string', function() {
+      var foo = {
+        id: 1,
+        children: [
+          { id: 2, children: [] },
+          {
+            id: 3,
+            children: [
+              { id: 4, children: [] },
+              { id: 5, children: [] }
+            ]
+          },
+          { id: 6, children: [] }
+        ]
+      }
+      var copyedObj = easycopy(foo, 'children');
+      expect(copyedObj).to.deep.equal({
+        children: [
+          { id: 2, children: [] },
+          {
+            id: 3,
+            children: [
+              { id: 4, children: [] },
+              { id: 5, children: [] }
+            ]
+          },
+          { id: 6, children: [] }
+        ]
+      })
+    })
+    it('filter is an object', function () {
+      var foo = {
+        id: 1,
+        children: [
+          { id: 2, children: [] },
+          {
+            id: 3,
+            children: [
+              { id: 4, children: [] },
+              { id: 5, children: [] }
+            ]
+          },
+          { id: 6, children: [] }
+        ]
+      };
+      var copyedObj = easycopy(foo, {children: [{1: 'children'}, 2]});
+      expect(copyedObj).to.deep.equal({
+        children: [
+          {
+            children: [
+              { id: 4, children: [] },
+              { id: 5, children: [] }
+            ]
+          },
+          { id: 6, children: [] }
+        ]
+      })
+
+      expect(easycopy(foo, {children: {1: 'children'}})).to.deep.equal({
+        children: [
+          {
+            children: [
+              { id: 4, children: [] },
+              { id: 5, children: [] }
+            ]
+          }
+        ]
+      })
+    })
   });
 
   describe('clone()', function () {

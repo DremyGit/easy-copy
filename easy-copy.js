@@ -17,6 +17,12 @@
       return clone(obj);
     }
 
+    if (getType(posArr) === 'string' ||
+        (getType(posArr) === 'object' && !opt.__innerCall)) {
+      posArr = [posArr]
+    }
+    opt.__innerCall = true;
+
     var target = createTargetObj(obj)
       , objType = getType(obj);
 
