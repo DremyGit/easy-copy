@@ -6,13 +6,10 @@
 
   easycopy = copy = function (src, filter, opt) {
 
-    if (typeof opt === 'undefined') {
-      opt = {};
-    }
-
+    src = src || {};
+    opt = opt || {};
     opt.undefined = typeof opt.undefined === 'undefined' ? true : opt.undefined;
 
-    src = src || {};
 
     switch (getType(filter)) {
       case 'undefined':
@@ -27,7 +24,7 @@
         break
     }
 
-    var target = createTargetObj(src)
+    var target = createTargetObj(src);
 
     for (var i = 0; i < filter.length; i++) {
       var filterItem = filter[i]
@@ -57,14 +54,16 @@
         value = src[key];
       }
 
-      if (opt.undefined || (typeof value !== 'undefined' &&
-                          (typeof value !== 'object' ||  !isNullObjectOrNullArray(value)))) {
+      if (opt.undefined || getType(value) !== 'undefined') {
 
         switch (getType(src)) {
           case 'array':
             target.push(clone(value));
             break;
           case 'object':
+            if (!opt.undefined && !src.hasOwnProperty(key)) {
+              break;
+            }
             target[key] = clone(value);
             break;
         }
@@ -116,6 +115,8 @@
         return 'array';
       case '[object Date]':
         return 'date';
+      case '[object Null]':
+        return 'null'
     }
   }
 
@@ -149,12 +150,5 @@
   }
   else {
     root.easycopy = easycopy
-  }
-
-  function isNullObjectOrNullArray(obj) {
-    for (var key in obj) {
-      return false;
-    }
-    return true;
   }
 }).call(this);

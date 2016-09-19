@@ -234,7 +234,8 @@ describe('easecopy', function () {
       var copyedObj = easycopy(obj, ['b', {c: ['c1', {c2: ['c21', 'c23']}, 'c33']}, {d: 'd3'}, {e: ['e1', {e2: 'e33'}]}], {undefined: false});
       expect(copyedObj).to.deep.equal({
         b: {b1: 'b1', b2: 'b2'},
-        c: {c1: 'c1', c2: {c21: 'c21'}}
+        c: {c1: 'c1', c2: {c21: 'c21'}},
+        d: {}
       });
     })
   })
@@ -270,7 +271,43 @@ describe('Use some nature filter', function () {
     });
     expect(easycopy(obj, {b: 'b1', c: 'c3', d: {d2: 'd21', d6: 'd61'}}, {undefined: false})).to.deep.equal({
       b: {b1: 'b1'},
+      c: {},
       d: {d2: {d21: 'd21'}}
     })
   })
 })
+
+describe('Options.undefined', function() {
+  var obj = {
+    a: 1,
+    b: 'bcd',
+    c: [],
+    d: {},
+    e: [{}],
+    f: null,
+    g: undefined
+  };
+  var filter = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+  it('is true', function() {
+    expect(easycopy(obj, filter, {undefined: true})).to.deep.equal({
+      a: 1,
+      b: 'bcd',
+      c: [],
+      d: {},
+      e: [{}],
+      f: null,
+      g: undefined,
+      h: undefined
+    })
+  });
+  it('is false', function() {
+    expect(easycopy(obj, filter, {undefined: false})).to.deep.equal({
+      a: 1,
+      b: 'bcd',
+      c: [],
+      d: {},
+      e: [{}],
+      f: null
+    })
+  })
+});
